@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <button id="clear_btn">Clear Canvas</button>
+    <script src="pixel.js"></script>
+    <script src="screen.js"></script>
+    <script>
+        const pixel_l = 10
+        const num_pixel = 60
+
+        canvas.height = pixel_l*num_pixel
+        canvas.width = pixel_l*num_pixel
+
+        ctx = canvas.getContext("2d")
+        screen = new Screen([], num_pixel, pixel_l)
+        screen.loadScreen()
+
+        clear_btn.addEventListener("click", (e) => {
+            screen = new Screen([], num_pixel, pixel_l)
+            screen.loadScreen()
+        })
+
+        function animate(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            screen.draw()
+            screen.addPhysics()
+            requestAnimationFrame(animate)
+        }
+
+        var mouse_down = false
+        addEventListener("mousedown", (e) => {
+            const offset_x = -8
+            const offset_y = -7
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            nearest_pixel = screen.findNearestPixel(e.clientX+offset_x, e.clientY+offset_y)
+            screen.fillPixel([nearest_pixel])
+            screen.draw()
+            mouse_down = true
+        })
+
+        addEventListener("mouseup", (e) => {
+            mouse_down = false
+        })
+
+        addEventListener("mousemove", (e) => {
+            if(mouse_down){
+                const offset_x = -8
+                const offset_y = -7
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                nearest_pixel = screen.findNearestPixel(e.clientX+offset_x, e.clientY+offset_y)
+                screen.fillPixel([nearest_pixel])
+                screen.draw()
+            }
+        })
+
+        requestAnimationFrame(animate)
+        
+    </script>
+</body>
+</html>
